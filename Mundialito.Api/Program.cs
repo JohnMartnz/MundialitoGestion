@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Mundialito.Api.Endpoints;
 using Mundialito.Application.Common.Interfaces;
 using Mundialito.Application.Equipos.Commands.CrearEquipo;
+using Mundialito.Application.Jugadores.Commands.CrearJugador;
 using Mundialito.Infrastructure.Persistence;
 using Mundialito.Infrastructure.Repositories;
 
@@ -23,6 +24,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Repositories
 builder.Services.AddScoped<IEquipoRepository, EquipoRepository>();
+builder.Services.AddScoped<IJugadorRepository, JugadorRepository>();
 
 // MediatR
 builder.Services.AddMediatR(cfg =>
@@ -33,6 +35,7 @@ builder.Services.AddMediatR(cfg =>
 var app = builder.Build();
 
 app.MapEquiposEndpoints();
+app.MapJugadoresEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
