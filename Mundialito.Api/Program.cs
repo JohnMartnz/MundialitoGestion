@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Mundialito.Api.Endpoints;
 using Mundialito.Application.Common.Interfaces;
 using Mundialito.Application.Equipos.Commands.CrearEquipo;
 using Mundialito.Infrastructure.Persistence;
@@ -15,6 +16,8 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<MundialitoDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+
 // UnitOfWork
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -28,6 +31,8 @@ builder.Services.AddMediatR(cfg =>
 });
 
 var app = builder.Build();
+
+app.MapEquiposEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
