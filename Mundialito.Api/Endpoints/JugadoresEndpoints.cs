@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Mundialito.Application.Jugadores.Commands.CrearJugador;
+using Mundialito.Application.Jugadores.Queries.GetJugadores;
 
 namespace Mundialito.Api.Endpoints
 {
@@ -22,6 +23,18 @@ namespace Mundialito.Api.Endpoints
             })
             .WithName("CrearJugador")
             .WithSummary("Crea un nuevo jugador");
+
+            group.MapGet("/", async (ISender sender) =>
+            {
+                var query = new GetJugadoresQuery();
+                var result = await sender.Send(query);
+
+                return result.IsSuccess
+                    ? Results.Ok(result.Value)
+                    : Results.BadRequest(result.Error);
+            })
+            .WithName("GetJugadores")
+            .WithSummary("Obtiene la lista de jugadores");
         }
     }
 }
