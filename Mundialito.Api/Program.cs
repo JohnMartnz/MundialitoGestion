@@ -25,6 +25,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Repositories
 builder.Services.AddScoped<IEquipoRepository, EquipoRepository>();
 builder.Services.AddScoped<IJugadorRepository, JugadorRepository>();
+builder.Services.AddScoped<IPartidoRepository, PartidoRepository>();
 
 // MediatR
 builder.Services.AddMediatR(cfg =>
@@ -36,6 +37,7 @@ var app = builder.Build();
 
 app.MapEquiposEndpoints();
 app.MapJugadoresEndpoints();
+app.MapPartidosEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
