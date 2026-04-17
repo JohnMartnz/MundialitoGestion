@@ -22,9 +22,22 @@ namespace Mundialito.Infrastructure.Repositories
             await _context.Partidos.AddAsync(partido, cancellationToken);
         }
 
+        public async Task UpdateAsync(Partido partido, CancellationToken cancellationToken = default)
+        {
+            _context.Partidos.Update(partido);
+            await Task.CompletedTask;
+        }
+
         public async Task<bool> EquipoExistsAsync(Guid equipoId, CancellationToken cancellationToken = default)
         {
             return await _context.Equipos.AnyAsync(equipo => equipo.Id == equipoId, cancellationToken);
+        }
+
+        public async Task<Partido?> GetByIdAsync(Guid partidoId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Partidos.Include(p => p.EquipoLocal)
+                .Include(p => p.EquipoVisitante)
+                .FirstOrDefaultAsync(p => p.Id == partidoId, cancellationToken);
         }
     }
 }
