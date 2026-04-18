@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Mundialito.Api.Endpoints;
+using Mundialito.Api.Middleware;
 using Mundialito.Application.Common.Interfaces;
 using Mundialito.Application.Equipos.Commands.CrearEquipo;
 using Mundialito.Application.Jugadores.Commands.CrearJugador;
+using Mundialito.Infrastructure.Idempotency;
 using Mundialito.Infrastructure.Persistence;
 using Mundialito.Infrastructure.Repositories;
 
@@ -26,6 +28,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEquipoRepository, EquipoRepository>();
 builder.Services.AddScoped<IJugadorRepository, JugadorRepository>();
 builder.Services.AddScoped<IPartidoRepository, PartidoRepository>();
+builder.Services.AddScoped<IIdempotencyRepository, IdempotencyRepository>();
 
 // MediatR
 builder.Services.AddMediatR(cfg =>
@@ -35,10 +38,6 @@ builder.Services.AddMediatR(cfg =>
 
 var app = builder.Build();
 
-app.MapEquiposEndpoints();
-app.MapJugadoresEndpoints();
-app.MapPartidosEndpoints();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -47,7 +46,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<IdempotencyMiddleware>();
+
 app.UseAuthorization();
+
+app.MapEquiposEndpoints();
+app.MapJugadoresEndpoints();
+app.MapPartidosEndpoints();
 
 app.MapControllers();
 

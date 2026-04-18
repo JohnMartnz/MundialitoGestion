@@ -16,7 +16,8 @@ namespace Mundialito.Api.Endpoints
                 var result = await sender.Send(command);
 
                 return result.IsSuccess
-                ? Results.Created($"/api/equipos/{result.Value}", new { id = result.Value })
+                ? Results.Json(result.Value, statusCode: 201)
+                //? Results.Created($"/api/equipos/{result.Value}", new { id = result.Value })
                 : result.Error.Code == "409"
                     ? Results.Conflict(result.Error)
                     : Results.BadRequest(result.Error);
