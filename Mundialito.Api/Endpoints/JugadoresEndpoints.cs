@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Mundialito.Application.Jugadores.Commands.CrearJugador;
+using Mundialito.Application.Jugadores.Queries.GetGoleadores;
 using Mundialito.Application.Jugadores.Queries.GetJugadores;
 
 namespace Mundialito.Api.Endpoints
@@ -35,6 +36,17 @@ namespace Mundialito.Api.Endpoints
             })
             .WithName("GetJugadores")
             .WithSummary("Obtiene la lista de jugadores");
+
+            group.MapGet("/goleadores", async(ISender sender) =>
+            {
+                var result = await sender.Send(new GetGoleadoresQuery());
+
+                return result.IsSuccess
+                    ? Results.Ok(result.Value)
+                    : Results.BadRequest(result.Error);
+            })
+            .WithName("GetGoleadores")
+            .WithSummary("Obtiene la lista de goleadores");
         }
     }
 }

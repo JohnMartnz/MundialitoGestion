@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Mundialito.Application.Common;
 using Mundialito.Application.Common.Interfaces;
 using Mundialito.Domain.Entities;
@@ -12,11 +13,13 @@ namespace Mundialito.Application.Partidos.Commands.RegistrarPartido
     {
         private readonly IPartidoRepository _partidoRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<RegistrarPartidoHandler> _logger;
 
-        public RegistrarPartidoHandler(IPartidoRepository partidoRepository, IUnitOfWork unitOfWork)
+        public RegistrarPartidoHandler(IPartidoRepository partidoRepository, IUnitOfWork unitOfWork, ILogger<RegistrarPartidoHandler> logger)
         {
             _partidoRepository = partidoRepository;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task<Result<Guid>> Handle(RegistrarPartidoCommand request, CancellationToken cancellationToken)
@@ -37,6 +40,8 @@ namespace Mundialito.Application.Partidos.Commands.RegistrarPartido
 
             await _partidoRepository.UpdateAsync(partido, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            _logger.LogInformation("Resultado registrado para el partido {PartidoId}: {GolesLocal} - {GolesVisitante}", partido.Id, request.GolesLocal, request.GolesVisitante);
 
             return Result<Guid>.Success(partido.Id);
         }

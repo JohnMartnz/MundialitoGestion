@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Mundialito.Application.Equipos.Queries.GetTablaPosiciones;
 using Mundialito.Application.Partidos.Commands.CrearPartido;
 using Mundialito.Application.Partidos.Commands.RegistrarPartido;
 
@@ -39,6 +40,17 @@ namespace Mundialito.Api.Endpoints
             })
             .WithName("RegistrarPartido")
             .WithSummary("Registra el resultado de un partido existente, actualizando los goles del equipo local y visitante.");
+
+            group.MapGet("/tabla-posiciones", async(ISender sender) =>
+            {
+                var result = await sender.Send(new GetTablaPosicionesQuery());
+
+                return result.IsSuccess
+                    ? Results.Ok(result.Value)
+                    : Results.BadRequest(result.Error);
+            })
+            .WithName("GetTablaPosiciones")
+            .WithSummary("Obtiene la tabla de posiciones de los equipos.");
         }
     }
 }
