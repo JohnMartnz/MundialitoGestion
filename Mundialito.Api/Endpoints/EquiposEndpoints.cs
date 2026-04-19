@@ -24,9 +24,15 @@ namespace Mundialito.Api.Endpoints
             }).WithName("CrearEquipo")
             .WithSummary("Crea un nuevo equipo");
 
-            group.MapGet("/", async (ISender sender) =>
+            group.MapGet("/", async (
+                ISender sender,
+                int pageNumber = 1,
+                int pageSize = 2,
+                string? sortBy = null,
+                string? sortDirection = "asc"
+            ) =>
             {
-                var query = new GetEquiposQuery();
+                var query = new GetEquiposQuery(pageNumber, pageSize, sortBy, sortDirection);
                 var result = await sender.Send(query);
 
                 return result.IsSuccess
